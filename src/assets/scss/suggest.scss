@@ -1,0 +1,28 @@
+$offset-px : -30px;
+$size: 40px;
+
+.container-suggest{
+    @include center(true);
+
+    & .center-suggest{
+        @include center(true);
+        justify-content: space-evenly;
+        position: relative;
+        min-width: 256px;
+
+        & .float{
+            position: absolute;
+            width: $size;
+            height: $size;
+            z-index: 1;
+        }
+
+        & #left{
+            left: $offset-px;
+        }
+        & #right{
+            right: $offset-px;
+        }
+
+    }
+}

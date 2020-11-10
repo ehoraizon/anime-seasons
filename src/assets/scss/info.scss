@@ -1,0 +1,14 @@
+.toggle-content{
+    opacity: 0;
+    display: none;
+    text-align: justify;
+}
+
+.show{
+    opacity: 1;
+    transition: opacity ease 0.3s;
+}
+
+.display-block{
+    display: block;
+}

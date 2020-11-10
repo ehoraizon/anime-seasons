@@ -1,0 +1,36 @@
+$s : 50px;
+
+.center{
+    @include center(false);
+    justify-content: start;
+}
+
+.center-col{
+    @include center(true);
+}
+
+.info-text {
+    @include text();
+    padding: 0;
+    height: 34px;
+}
+
+ion-fab-button{
+    box-shadow: 2px 4px 8px 0px grey;
+    border-radius: 50%;
+}
+
+.fab-container{
+    position: relative;
+
+    & .fab-share{
+        color: #00D6FF;
+        position: absolute;
+        width: $s;
+        height: $s;
+        right: 12px;
+        bottom: -25px;
+    }
+}
+  
+  

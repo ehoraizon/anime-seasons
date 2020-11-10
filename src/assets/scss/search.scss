@@ -1,0 +1,30 @@
+$color: rgb(194, 7, 7);
+
+.container{
+    position: relative;
+
+    .center-col{
+        @include center(true)
+    }
+
+    & .content-slide{
+        box-sizing: border-box;
+        overflow-x: scroll;
+        white-space: nowrap;
+
+        & ion-chip{
+            // display: inline-block;    
+            overflow-wrap: normal!important;
+            margin-right: 2px;
+        }
+
+        & .active{
+            background-color: $color;
+            color: white;
+        }
+    }
+}
+
+.design-margin{
+    margin-top: 5px !important;
+}

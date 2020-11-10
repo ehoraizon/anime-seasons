@@ -1,0 +1,14 @@
+.rabbit{
+    position: relative;
+    @include center(true);
+    flex-flow: column nowrap;
+
+    & img{
+        height: calc(100vh - 72px);
+    }
+
+    h4{
+        position: absolute;
+        top: calc(100vh - 80px)
+    }
+}

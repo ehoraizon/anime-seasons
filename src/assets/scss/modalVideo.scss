@@ -1,0 +1,19 @@
+.video-container{
+    @media screen and (orientation: landscape) {
+        --background: black;
+    }
+
+    & .responsive-video{
+        width: 100vw;
+    
+        @media screen and (orientation: landscape) {
+            height: calc(100vh - 60px);
+        }
+    }
+
+    & .sorry{
+        @include text();
+        text-align: center;
+    }
+
+}

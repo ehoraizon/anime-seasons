@@ -1,0 +1,54 @@
+$f-buttom : 1px;
+$card-h: 135px;
+$card-w: 100px;
+$plus: 25px;
+
+.card{
+    @include card();
+    position: relative;
+    height: $card-h;
+    width: $card-w;
+
+    .wrapper{
+        background-color: rgba($color: #000000, $alpha: 0);
+
+        & img{
+            border-radius: $b-radius;
+            height: $card-h;
+            width: $card-w;
+        }
+
+        & .favorite{
+            position: absolute;
+            bottom: $f-buttom;
+            right: $f-buttom;
+            font-size: 1.5rem;
+            color: #ff3939;
+            transition: all ease 0.1s;
+        }
+
+        & .hide{
+            display: none;
+        }
+    }
+}
+
+.bigger-card{
+    height: $card-h + $plus;
+    width: $card-w + $plus;
+
+    & .wrapper img{
+        height: $card-h + $plus;
+        width: $card-w + $plus;
+    }
+}
+
+.tiny{
+    height: $card-h - $plus;//15px;
+    width: $card-w - $plus;//20px;
+
+    & .wrapper img{
+        height: $card-h - $plus;//15px;
+        width: $card-w - $plus;//20px;
+    }
+}

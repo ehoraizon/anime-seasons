@@ -1,0 +1,8 @@
+{
+  "appId": "com.appworld.anime_seasons",
+  "appName": "Anime Seasons",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "cordova": {}
+}
