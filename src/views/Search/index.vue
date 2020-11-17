@@ -229,7 +229,6 @@ export default{
         })
     }
     if(Restore.data.Search.searchCache.length){
-        console.log('from saved')
         this.searchResult = Restore.data.Search.searchCache;
         if(Restore.data.Search.top)
             this.fullFilled = true;

@@ -4,16 +4,16 @@
       <img  v-touch:tap="goDetails" 
             v-touch:longtap="addToFavorite" 
             v-waves.image.light :src="img"/>
-      <ion-icon v-touch:tap="addToFavorite"
-                :id="`favorite_${id}`"
-                class="favorite" v-if="isFavorite && animate()"
-                :class="{'hide' : sugest}"
-                name="heart">
-      </ion-icon>
-      <ion-icon v-touch:tap="addToFavorite"
-          class="favorite" v-else name="heart-empty"
-          :class="{'hide' : sugest}">
-      </ion-icon>
+      <div @click="addToFavorite">
+        <ion-icon :id="`favorite_${id}`"
+                  class="favorite" v-if="isFavorite && animate()"
+                  :class="{'hide' : sugest}"
+                  name="heart">
+        </ion-icon>
+        <ion-icon class="favorite" v-else name="heart-empty"
+            :class="{'hide' : sugest}">
+        </ion-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -31,14 +31,9 @@ export default{
     sugest: {type:Boolean, default:false}
   },
   data(){
-    return{
-      showCard: true,
-      tapStart: 0,
-    }
-  },
-  computed:{
-    isFavorite(){
-      return !!Cache.data.favorites.find(id => id == this.id);
+    const isFavorite = !!Cache.data.favorites.find(id => id == this.id);
+    return {
+      isFavorite
     }
   },
   methods:{

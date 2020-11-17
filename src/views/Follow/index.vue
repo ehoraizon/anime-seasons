@@ -42,7 +42,6 @@ export default{
             .scrollByPoint(0, Restore.data.Follow.scrollPos, 0));
 
     const fav = Cache.data.favorites.slice();
-    console.log(fav)
     if(fav.length){
       Cache.data.mySavedFavorites = Cache.data.mySavedFavorites.slice()
                             .filter(item => fav.includes(item.mal_id))

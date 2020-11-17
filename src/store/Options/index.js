@@ -5,6 +5,7 @@ const Options = {
             direct : 1
         },
         darkMode : false,
+        lang: 'en'
     },
     methods: {
         changeOrder: function(prop, direct){
@@ -18,12 +19,16 @@ const Options = {
             this.saveData();
         },
         saveData: function(){
-            window.setItem(Options.data ,window.options);
+            window.setItem(Options.data, window.options);
         },
         darkMode : function(){
             Options.data.darkMode = !Options.data.darkMode;
             this.saveData();
-        } 
+        },
+        changeLanguage : function(lang){
+            Options.data.lang = lang;
+            this.saveData();
+        }
     },
 };
 

@@ -14,15 +14,26 @@
             <ion-icon slot="start" name="help"></ion-icon>
             <ion-label>About</ion-label>
           </ion-item>
+          <ion-radio-group :value="language" @ionChange="updateLanguage">
+            <ion-item>
+              <ion-label>Spanish</ion-label>
+              <ion-radio slot="start" value="es"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>English</ion-label>
+              <ion-radio slot="start" value="en"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
         </ion-list>
         <p class="toggle-content">
-          This application has been created by and for Japanese culture lovers.
+          This application has been created for Japanese culture lovers.
           If you like it, please share and rate it. Any questions or suggestions can be sent to
           <strong>appworld_@outlook.com</strong>. 
-          <br /><br /> About the videos: They are not downloaded or viewed directly on the app,
-          you must use the links provided to view the videos at your own responsibility.
-          It is possible that some of the anime is not found in any given link,
-          in that case you can copy the name and search it on the web.
+          <br /><br /> The information and videos on this app are not our property 
+          and are not hosted or stored in servers of our own. If the episodes of an anime are not 
+          found you can access the trailer and two external links that are provided. You can
+          also copy the anime title to the clipboard
+          (it is possible that some of the anime is not found in any given link).
           <br /><br /> There is more to come. 😉
         </p>
       </ion-content>
@@ -30,8 +41,15 @@
 </template>
 
 <script>
+import Options from '@/store/Options';
+
 export default{
   name: 'info',
+  data(){
+    return {
+      language : Options.data.lang
+    }
+  },
   methods:{
     toggle(n){
       const targets = document.querySelectorAll('.toggle-content');
@@ -49,6 +67,10 @@ export default{
     },
     rate(){
       window.CapacitorRateApp.requestReview();
+    },
+    updateLanguage(e){
+      this.language = e.target.value;
+      Options.methods.changeLanguage(this.language);
     }
   }
 }

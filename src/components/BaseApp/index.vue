@@ -5,12 +5,14 @@
 </template>
 
 <script>
+import Options from '@/store/Options';
 
 export default {
   name: 'baseApp',
   data(){
     return{
       render : true,
+      options : Options.data
     }
   },
   computed:{

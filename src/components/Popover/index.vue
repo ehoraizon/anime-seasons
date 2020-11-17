@@ -77,7 +77,6 @@ export default {
     changeOrder(){
         const prop = document.getElementById("one").value;
         const direct = Number.parseInt(document.getElementById("two").value);
-        console.log(prop + ' ' + direct)
         Options.methods.changeOrder(prop, direct);
     }
   },

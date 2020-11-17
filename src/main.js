@@ -25,11 +25,10 @@ Vue.use(IonicVue)
 
 window.appUrl = "https://play.google.com/store/apps/details?id=com.appworld.anime_seasons"
 window.url = "https://api.jikan.moe/v3"
-window.secondUrl = "https://animeflv.ru/animes/buscar/?nombre=" //"https://animeflv.net/browse?q="
-window.thirdUrl = "https://vrv.co/?q="
+window.secondUrl = "https://animeflv.net/animes/buscar/?nombre=" //"https://animeflv.net/browse?q="
+window.thirdUrl = "https://kissanimefree.net/?s="
 window.hUrl1 = "https://hentaihaven.red/?s="
 window.hUrl2 = "https://tiohentai.com/directorio?q="
-
 
 import Grid from 'vue-js-grid'
 
@@ -40,42 +39,25 @@ import { Plugins } from '@capacitor/core';
 const { Clipboard, 
         Network,
         Storage,
-        PushNotifications,
         AnimeFLVScraper,
+        KissAnimeScraper,
         Share, 
         CapacitorRateApp,
+        LocalNotifications,
+        SplashScreen
          } = Plugins;
 
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { LocalNotifications } from '@ionic-native/local-notifications';
-
-PushNotifications.addListener('registration', 
-(token) => {
-        const save = async function(token){
-          const resKeys = await Storage.keys();
-          if(!resKeys.includes('token')){
-            Storage.set({
-              key: 'token',
-              value: JSON.stringify(token)
-            });
-          }
-        };
-        save(token);
-    }
-);
-
-(async function(){await PushNotifications.register()})();
-
-window.PushNotifications = PushNotifications;
 
 window.CapClipboard = Clipboard;
 window.CapNetwork = Network;
 window.CapacitorRateApp = CapacitorRateApp
 window.SocialSharing = SocialSharing;
 window.LocalNotifications = LocalNotifications;
-window.PLocalNotifications = Plugins.LocalNotifications;
+window.SplashScreen = SplashScreen;
 
 window.AnimeFLVScraper = AnimeFLVScraper;
+window.KissAnimeScraper = KissAnimeScraper;
 
 async function setItem(db, key){
   await Storage.set({
@@ -84,43 +66,49 @@ async function setItem(db, key){
   });
 }
 
-window.addToChannel = (id, name) => {
-  PushNotifications.createChannel({
-    id,
-    name
-  })
-}
-
-window.removeFromChannel = (id, name) => {
-  PushNotifications.deleteChannel({
-    id,
-    name
-  })
-}
-
 window.removeFromChannel 
 window.setItem = setItem;
 window.storage = Storage;
 window.share = Share;
 
 const key = 'fav';
+const options = 'con';
+const watched = 'wtd';
+window.watched = watched;
+window.options = options;
 window.key = key;
 
 import Cache from '@/store/Cache'
+import Options from '@/store/Options'
 
 (async function(){
   const res = await Storage.keys();
-  console.log(res)
   if(!res.keys.includes(key)){
     await window.setItem([], key);
   }else{
     Storage.get({key})
-           .then(res => {
-            const favorites = JSON.parse(res.value);
-            for(let i of favorites){
-              Cache.methods.addFavorite(i);
-            }
-           })
+      .then(res => {
+        const favorites = JSON.parse(res.value);
+        Cache.data.favorites = favorites;
+      })
+  }
+  if(!res.keys.includes(options)){
+    await window.setItem(Options.data, options);
+  }else{
+    Storage.get({key: options})
+      .then(res => {
+        const data = JSON.parse(res.value);
+        Options.data = data;
+      })
+  }
+  if(!res.keys.includes(watched)){
+    await window.setItem([], watched);
+  }else{
+    Storage.get({key: watched})
+      .then(res => {
+        const data = JSON.parse(res.value);
+        Cache.data.animeEpisodes.watched = data;
+      })
   }
 })()
 

@@ -49,7 +49,6 @@
       <h5 v-if="anime.synopsis" 
           style="font-weight: 600; padding: 0 24px">
       Synopsis:</h5>
-      <!-- <ion-title v-if="anime.synopsis" class="ion-padding-top">Synopsis:</ion-title> -->
       <transition name="anime-text" 
                   enter-active-class="animated fadeIn faster">
         <p v-if="showAllText" v-touch:tap="toggleText" 
@@ -65,7 +64,7 @@
           {{smallText}}
         </p>
       </transition>
-      <div class="center" style="margin-left: 24px">
+      <div v-if="fallback" class="center" style="margin-left: 24px">
         <ion-button :disabled="isNotNormalAnime || !src" 
                     v-touch:tap="goYoutube" 
                     class="ion-activatable ripple-parent" 
@@ -74,8 +73,7 @@
           <span style="padding-left: 4px"> Trailer </span>
           <ion-ripple-effect></ion-ripple-effect> 
         </ion-button>
-        <!-- LOOK -->
-        <ion-button :disabled="!ready || anime.status == 'Not yet aired'" 
+        <ion-button :disabled="anime.status == 'Not yet aired'" 
                     v-touch:tap="linkAlert"
                     class="ion-activatable ripple-parent ion-margin-start"
                     color="primary">
@@ -84,7 +82,24 @@
           <ion-ripple-effect></ion-ripple-effect>
         </ion-button>
       </div>
-
+      <ion-list v-show="animeEpisodes.length" inset="true" lines="inset">
+        <ion-list-header style="padding: 0 8px">
+          <h5 style="font-weight: 600">
+            Episodes:
+          </h5>
+        </ion-list-header>
+        <ion-item 
+          v-for="episode in animeEpisodes" 
+          :key="episode[2]"
+          @click="openModal($event, episode[0], episode[2])">
+          <ion-thumbnail slot="start">
+            <img :src="!!episode[1] ? episode[1] : anime.image_url">
+          </ion-thumbnail>
+          <ion-label>{{episode[2]}}</ion-label>
+          <ion-icon v-if="watched.includes(episode[2])" name="eye" color="primary"></ion-icon>
+          <ion-icon v-else name="eye-off"></ion-icon>
+        </ion-item>
+      </ion-list>
       <h5 v-if="sugest.length" 
           style="font-weight: 600; padding: 0 24px">
       Suggestions:</h5>
@@ -96,6 +111,7 @@
 
 <script>
 import Cache from '@/store/Cache'
+import Options from '@/store/Options'
 import animeCard from '@/components/RenderAnimes/animeCard'
 import suggested from '@/components/Suggest'
 
@@ -116,11 +132,13 @@ export default{
       smallText : '',
       showAllText: false,
       isNotNormalAnime: false,
-      ready: false,
       fail: false,
       src: '',
       goFunction: 0,
-      sugest : ''
+      sugest : '',
+      animeEpisodes : [],
+      fallback : false,
+      watched : [],
     }
   },
   watch:{
@@ -179,20 +197,16 @@ export default{
           cssClass: 'secondary',
           handler: () => {
             this.goFunction = 1;
-            if(this.fail || Cache.methods.passed(this.anime.mal_id)){
-              this.btnFunctions(this.goFunction);
-            }
+            this.btnFunctions(this.goFunction);
           }
         },
         {
-          text: !this.isNotNormalAnime ? 'Go VRV' : 'Go Tio Hentai',
+          text: !this.isNotNormalAnime ? 'Go KissAnimeFree' : 'Go Tio Hentai',
           role: 'accept',
           cssClass: 'secondary',
           handler: () => {
             this.goFunction = 2;
-            if(this.fail || Cache.methods.passed(this.anime.mal_id)){
-              this.btnFunctions(this.goFunction);
-            }
+            this.btnFunctions(this.goFunction);
           }
         },
         {
@@ -201,9 +215,7 @@ export default{
           cssClass: 'secondary',
           handler: () => {
             this.goFunction = 3;
-            if(this.fail || Cache.methods.passed(this.anime.mal_id)){
-              this.btnFunctions(this.goFunction);
-            }
+            this.btnFunctions(this.goFunction);
           }
         } 
       ];
@@ -277,12 +289,69 @@ export default{
         else this.loadingData(fetchSugest);
       }
     },
+    loadEpisodes(loading=null){
+      const scraper = this.scraper();
+
+      // ADD TO CACHE
+      const saveInCache = urlThumbsInd => {
+        Cache.methods.saveEpisodes(this.id, urlThumbsInd);
+      };
+
+      // Fall back
+      const fback = () => {
+        this.fallback = true;
+      }
+
+      const sleep = () => {
+        if(this.anime.title == undefined)
+          setTimeout(sleep, 1000)
+        else{
+          scraper.searchAnime({'anime' : this.anime.title})
+            .then(res => {
+              scraper.getAnimeEpisodes({'url' : res.url})
+                .then( res2 => {
+                  const animeEpisodes = JSON.parse(res2.urlThumbsInd);
+                  this.animeEpisodes = animeEpisodes.map(item => {
+                    item[1] = item[1] ? `data:image/jpg;base64,${item[1]}` : '';
+                    return item;
+                  });
+                  setTimeout(() => {saveInCache(this.animeEpisodes)} , 1000);
+                  if(loading)
+                    this.loadSuggest(loading);
+                })
+                .catch(() => {
+                  setTimeout(fback, 1000);
+                  if(loading)
+                    this.loadSuggest(loading);
+                })
+            })
+            .catch(() => {
+              setTimeout(fback, 1000)
+              if(loading)
+                this.loadSuggest(loading);
+            })
+        }
+      }
+
+      if(loading){
+        this.watched = Cache.methods.getWatched(this.id);
+        sleep();
+      }else{
+        this.watched = Cache.methods.getWatched(this.id);
+        const cache = Cache.methods.getEpisodes(this.id);
+        if(cache){
+          this.animeEpisodes = cache;
+        }
+        else sleep();
+      }
+    },
     load(){
       const cachedAnime = Cache.methods.getAnime(Number.parseInt(this.id));
       if(cachedAnime){
         this.anime = cachedAnime;
         if(this.anime.synopsis)
           this.makeShortText();
+        this.loadEpisodes();
         this.loadSuggest();
       }else{
         this.loadingData((loading) =>
@@ -296,13 +365,10 @@ export default{
                 const genres = this.anime.genres.slice();
                 if(this.findNotAllow(genres))
                   this.isNotNormalAnime = true;
-                this.loadSuggest(loading);
+                this.loadEpisodes(loading);
               })
         )
       }
-
-      Cache.methods.saveVideoAd(this.anime.mal_id)
-      this.btnFunctions(this.goFunction);
 
       const video = Cache.methods.getVideo(Number.parseInt(this.id));
       if(video){
@@ -317,12 +383,34 @@ export default{
                 id: Number.parseInt(this.id)
               });
             })
-            .catch(err => {
-              console.log(err);
+            .catch(() => {
               this.isNotNormalAnime = true;
             })
       }
-    }
+    },
+    scraper(){
+      return Options.data.lang == 'es' 
+          ? window.AnimeFLVScraper : window.KissAnimeScraper
+    },
+    openModal(e, url, n) {
+      return this.$ionic.modalController
+        .create({
+          component: () => import('@/components/Modal'),
+          componentProps: {
+            parent: this,
+            propsData: {
+              id: this.id,
+              title: n,
+              url,
+              scraper : this.scraper(),
+              closeMe: () => {
+                this.$ionic.modalController.dismiss()
+              },
+            },
+          },
+        })
+        .then(m => m.present())
+    },
   },
   mounted(){
     this.load();
