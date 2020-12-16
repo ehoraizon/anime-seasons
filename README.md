@@ -3,16 +3,14 @@
 Anime watching app.
 
 <img src="./src/assets/bonny.svg"
-     alt="Markdown Monster icon"
-     style="background-color: orange; max-width: 100px; border-radius: 50%; height: 100px; padding: 10px" />
+     alt="Markdown App icon"
+     width="150" height="100"/>
 
 Catalog based on [jikan v3 api](https://jikan.moe/).
 Uses animeflv.net to get anime episodes with Spanish subtitles.
 Uses kissanimefree.net to get anime episodes with English translation.
 
 Made with [Vue](https://vuejs.org/), [Ionic](https://ionicframework.com/) and [Capacitor](https://capacitorjs.com/).
-
-[![](/readme_files/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.appworld.anime_seasons)
 
 ![GitHub Logo](/readme_files/app.gif)
 
