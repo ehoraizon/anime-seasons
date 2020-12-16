@@ -12,7 +12,7 @@ Uses kissanimefree.net to get anime episodes with English translation.
 
 Made with [Vue](https://vuejs.org/), [Ionic](https://ionicframework.com/) and [Capacitor](https://capacitorjs.com/).
 
-![GitHub Logo](/readme_files/app.gif)
+<img src="/readme_files/app.gif" height="500" />
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 
